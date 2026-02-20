@@ -59,7 +59,11 @@ def train_model(model_type: str = "random_forest"):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", type=str, default="random_forest",
-                        choices=["random_forest", "logistic_regression"])
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="random_forest",
+        choices=["random_forest", "logistic_regression"],
+    )
     args = parser.parse_args()
     train_model(model_type=args.model)
