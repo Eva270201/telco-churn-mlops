@@ -2,8 +2,11 @@
 Training script for Telco Customer Churn prediction.
 """
 
-import logging
 import argparse
+import logging
+
+import mlflow
+import mlflow.sklearn
 import yaml
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -33,6 +36,9 @@ def evaluate_model(model, X_test, y_test) -> dict:
 def train_model(model_type: str = "random_forest"):
     config = load_config()
 
+    mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
+    mlflow.set_experiment(config["mlflow"]["experiment_name"])
+
     X_train, X_test, y_train, y_test, scaler = preprocess_pipeline(
         filepath=config["data"]["raw_path"],
         test_size=config["data"]["test_size"],
@@ -48,11 +54,18 @@ def train_model(model_type: str = "random_forest"):
     else:
         raise ValueError(f"Unknown model type: {model_type}")
 
-    model.fit(X_train, y_train)
-    metrics = evaluate_model(model, X_test, y_test)
+    with mlflow.start_run(run_name=model_type):
+        mlflow.log_param("model_type", model_type)
+        mlflow.log_params(params)
 
-    logger.info(f"Model: {model_type}")
-    logger.info(f"Metrics: {metrics}")
+        model.fit(X_train, y_train)
+        metrics = evaluate_model(model, X_test, y_test)
+
+        mlflow.log_metrics(metrics)
+        mlflow.sklearn.log_model(model, artifact_path="model")
+
+        logger.info(f"Model: {model_type}")
+        logger.info(f"Metrics: {metrics}")
 
     return model, metrics
 
