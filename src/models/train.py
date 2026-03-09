@@ -4,6 +4,8 @@ Training script for Telco Customer Churn prediction.
 
 import argparse
 import logging
+import os
+import pickle
 
 import mlflow
 import mlflow.sklearn
@@ -64,8 +66,14 @@ def train_model(model_type: str = "random_forest"):
         mlflow.log_metrics(metrics)
         mlflow.sklearn.log_model(model, artifact_path="model")
 
+        # Save model as pickle for Docker
+        os.makedirs("models", exist_ok=True)
+        with open("models/model.pkl", "wb") as f:
+            pickle.dump(model, f)
+
         logger.info(f"Model: {model_type}")
         logger.info(f"Metrics: {metrics}")
+        logger.info("Model saved to models/model.pkl")
 
     return model, metrics
 

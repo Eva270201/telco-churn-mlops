@@ -22,3 +22,5 @@ mlruns/
 # OS
 .DS_Store
 Thumbs.db
+
+models/
