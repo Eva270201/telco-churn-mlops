@@ -42,3 +42,8 @@ addopts = "--cov=src --cov-report=term-missing"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+]
