@@ -32,8 +32,12 @@ def test_evaluate_model():
 
 
 MOCK_DATA = (
-    np.array([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]] * 100),
-    np.array([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]] * 20),
+    np.array(
+        [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]] * 100
+    ),
+    np.array(
+        [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]] * 20
+    ),
     np.array([0, 1] * 50),
     np.array([0, 1] * 10),
     None,
@@ -49,9 +53,14 @@ MOCK_DATA = (
 @patch("mlflow.set_experiment")
 @patch("mlflow.set_tracking_uri")
 def test_train_random_forest(
-    mock_uri, mock_exp, mock_log_model,
-    mock_log_param, mock_log_params,
-    mock_log_metrics, mock_run, mock_pipeline,
+    mock_uri,
+    mock_exp,
+    mock_log_model,
+    mock_log_param,
+    mock_log_params,
+    mock_log_metrics,
+    mock_run,
+    mock_pipeline,
 ):
     mock_pipeline.return_value = MOCK_DATA
     mock_run.return_value.__enter__ = lambda s: s
@@ -70,9 +79,14 @@ def test_train_random_forest(
 @patch("mlflow.set_experiment")
 @patch("mlflow.set_tracking_uri")
 def test_train_logistic_regression(
-    mock_uri, mock_exp, mock_log_model,
-    mock_log_param, mock_log_params,
-    mock_log_metrics, mock_run, mock_pipeline,
+    mock_uri,
+    mock_exp,
+    mock_log_model,
+    mock_log_param,
+    mock_log_params,
+    mock_log_metrics,
+    mock_run,
+    mock_pipeline,
 ):
     mock_pipeline.return_value = MOCK_DATA
     mock_run.return_value.__enter__ = lambda s: s
