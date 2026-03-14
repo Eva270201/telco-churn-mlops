@@ -96,6 +96,8 @@ def test_train_logistic_regression(
     assert "accuracy" in metrics
 
 
-def test_train_invalid_model():
+@patch("src.models.train.preprocess_pipeline")
+def test_train_invalid_model(mock_pipeline):
+    mock_pipeline.return_value = MOCK_DATA
     with pytest.raises(ValueError):
         train_model(model_type="invalid_model")
