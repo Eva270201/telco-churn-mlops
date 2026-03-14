@@ -5,15 +5,21 @@ WORKDIR /app
 # Install UV
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Copy everything
-COPY pyproject.toml uv.lock README.md ./
-COPY src/ ./src/
-COPY config/ ./config/
-COPY mlruns/ ./mlruns/
-COPY models/ ./models/
+# Copy dependency files
+COPY pyproject.toml README.md ./
+
+# Copy uv.lock if exists
+COPY uv.lock* ./
 
 # Install dependencies
 RUN uv sync --frozen --no-dev
+
+# Copy source code and config
+COPY src/ ./src/
+COPY config/ ./config/
+
+# Copy models if exists (optional)
+COPY models/ ./models/
 
 # Expose port
 EXPOSE 8000

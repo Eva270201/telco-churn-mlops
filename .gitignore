@@ -4,9 +4,6 @@ __pycache__/
 *.egg-info/
 .venv/
 
-# UV
-uv.lock
-
 # Data (on ne commit pas les données brutes)
 data/raw/
 
