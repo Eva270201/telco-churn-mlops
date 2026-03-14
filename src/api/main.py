@@ -4,9 +4,11 @@ FastAPI application for Telco Customer Churn prediction.
 
 import logging
 import pickle
+import time
+from collections import defaultdict
 
 import numpy as np
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 
 logging.basicConfig(level=logging.INFO)
@@ -19,6 +21,12 @@ app = FastAPI(
 )
 
 model = None
+
+# Simple in-memory metrics
+metrics_store = defaultdict(int)
+metrics_store["total_requests"] = 0
+metrics_store["total_predictions"] = 0
+metrics_store["churn_predictions"] = 0
 
 
 def load_model():
@@ -65,15 +73,42 @@ async def startup_event():
     load_model()
 
 
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    """Log every request with method, path and response time."""
+    start_time = time.time()
+    response = await call_next(request)
+    duration = time.time() - start_time
+    metrics_store["total_requests"] += 1
+    logger.info(
+        f"{request.method} {request.url.path} "
+        f"status={response.status_code} duration={duration:.3f}s"
+    )
+    return response
+
+
 @app.get("/health")
 def health_check():
     return {"status": "ok", "model_loaded": model is not None}
+
+
+@app.get("/metrics")
+def get_metrics():
+    """Return basic API metrics."""
+    return {
+        "total_requests": metrics_store["total_requests"],
+        "total_predictions": metrics_store["total_predictions"],
+        "churn_predictions": metrics_store["churn_predictions"],
+        "model_loaded": model is not None,
+    }
 
 
 @app.post("/predict", response_model=PredictionResponse)
 def predict(features: CustomerFeatures):
     if model is None:
         raise HTTPException(status_code=503, detail="Model not loaded")
+
+    start_time = time.time()
 
     input_data = np.array(
         [
@@ -103,6 +138,15 @@ def predict(features: CustomerFeatures):
 
     prediction = model.predict(input_data)[0]
     probability = model.predict_proba(input_data)[0][1]
+    duration = time.time() - start_time
+
+    metrics_store["total_predictions"] += 1
+    if prediction:
+        metrics_store["churn_predictions"] += 1
+
+    logger.info(
+        f"Prediction: churn={bool(prediction)} prob={probability:.3f} duration={duration:.3f}s"
+    )
 
     return PredictionResponse(
         churn=bool(prediction),
