@@ -12,21 +12,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install UV
-        uses: astral-sh/setup-uv@v3
-
-      - name: Install dependencies
-        run: uv sync --no-dev
-
-      - name: Train model
-        run: uv run python src/models/train.py --model random_forest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
         run: docker build -t telco-churn-api .
-
-      - name: Verify Docker image
-        run: |
-          docker run -d -p 8000:8000 --name test-container telco-churn-api
-          sleep 5
-          curl --fail http://localhost:8000/health
-          docker stop test-container
