@@ -2302,6 +2302,7 @@ dependencies = [
 [package.optional-dependencies]
 dev = [
     { name = "black" },
+    { name = "httpx" },
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -2317,6 +2318,7 @@ dev = [
 requires-dist = [
     { name = "black", marker = "extra == 'dev'", specifier = ">=24.0.0" },
     { name = "fastapi", specifier = ">=0.110.0" },
+    { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.27.0" },
     { name = "mlflow", specifier = ">=2.10.0" },
     { name = "numpy", specifier = ">=1.24.0" },
     { name = "pandas", specifier = ">=2.0.0" },
