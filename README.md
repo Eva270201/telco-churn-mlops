@@ -64,7 +64,7 @@ The FastAPI application includes:
 
 ## 6. Team Collaboration
 
-Solo project. All development tracked through Git with feature branches, atomic commits, and meaningful commit messages following conventional commits format (`feat:`, `fix:`, `chore:`).
+With Maizane Ali Ahamada project. All development tracked through Git with feature branches, atomic commits, and meaningful commit messages following conventional commits format (`feat:`, `fix:`, `chore:`).
 
 ## 7. Limitations & Future Work
 
