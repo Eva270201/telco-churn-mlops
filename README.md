@@ -81,7 +81,7 @@ With Maizane Ali Ahamada project. All development tracked through Git with featu
 
 ## 🎥 Demo Video
 
-> Link to demo video: *[à compléter]*
+> Link to demo video: https://youtu.be/jrDY22teCrY
 
 ## 🚀 How to Run
 
